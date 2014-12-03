@@ -1,3 +1,3 @@
-Sample.tex
 Introduction.tex
+Sample.tex
 Analysis.tex
