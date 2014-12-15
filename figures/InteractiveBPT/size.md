@@ -1,2 +1,2 @@
-width = 850
+width = 634
 height = 400
