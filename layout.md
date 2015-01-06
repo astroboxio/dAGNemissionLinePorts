@@ -4,4 +4,4 @@ figures/InteractiveBPT/index.html
 Analysis.tex
 figures/Demarcation/Demarcation.png
 figures/Zakamska/Zakamska.png
-Comparisons.tex
+Results.tex
