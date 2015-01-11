@@ -1,0 +1,459 @@
+{
+ "metadata": {
+  "name": "",
+  "signature": "sha256:f753ad4198c320987a1d2aebf799ef949280ba77d1efd3b97f08077da7fb3ed4"
+ },
+ "nbformat": 3,
+ "nbformat_minor": 0,
+ "worksheets": [
+  {
+   "cells": [
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "#Authors: Michael J. Roberts (University of Warwick), Alfredo Carpineti (Imperial College London)\n",
+      "#Acknowledgements: Jake van derPlas and the astroML project: [http://www.astroml.org/examples/datasets/plot_sdss_line_ratios.html]."
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 29
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "import numpy as np\n",
+      "import scipy\n",
+      "import matplotlib as mpl\n",
+      "import matplotlib.pyplot as plt\n",
+      "import pylab"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 30
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "from matplotlib import pyplot as plt\n",
+      "from matplotlib import rc"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 31
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "#from __future__ import unicode_literals\n",
+      "#mpl.rcParams['text.usetex']=True\n",
+      "#mpl.rcParams['text.latex.unicode']=True"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 32
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "mpl.get_configdir()"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [
+      {
+       "metadata": {},
+       "output_type": "pyout",
+       "prompt_number": 33,
+       "text": [
+        "'/Users/iMacHome/.matplotlib'"
+       ]
+      }
+     ],
+     "prompt_number": 33
+    },
+    {
+     "cell_type": "markdown",
+     "metadata": {},
+     "source": [
+      "Importing of all neccessary packages needed to compile the BPT plot e.g. matplotlib, scipy, numpy, etc."
+     ]
+    },
+    {
+     "cell_type": "markdown",
+     "metadata": {},
+     "source": [
+      "Defining the lineratio_index(self, indicator='NII')."
+     ]
+    },
+    {
+     "cell_type": "markdown",
+     "metadata": {},
+     "source": [
+      "np.linspace returns evenly spaced numbers over a specified interval. Emprical fits from Kewley et al. (2001): [Theoretical Modeling of Starburst Galaxies]."
+     ]
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "NII   = np.linspace(-3.0,  0.39, 10000)\n",
+      "NIIv1 = np.linspace(-3.0,  0.42, 10000)\n",
+      "NIIv2 = np.linspace(-3.0,  0.35, 10000)\n",
+      "OI    = np.linspace(-3.0, -0.70, 10000)\n",
+      "SII   = np.linspace(-3.0,  0.20, 10000)\n",
+      "SIIs  = np.linspace(-3.0, -0.38, 10000)\n",
+      "KAUFF = np.linspace(-1.25, 0.00, 10000)\n",
+      "\n",
+      "KAUFF_INVISIBLE = np.linspace(0, 2.0)\n",
+      "\n",
+      "def log_OIII_Hb_NII(log_NII_Ha, eps=0):\n",
+      "    return 1.19 + eps + 0.61 / (log_NII_Ha - eps - 0.47)\n",
+      "\n",
+      "def log_OIII_Hb_SII(log_SII_Ha, eps=0):\n",
+      "    return 1.30 + eps + 0.72 / (log_SII_Ha - eps - 0.32)\n",
+      "\n",
+      "def log_OIII_Hb_OI(log_OI_Ha, eps=0):\n",
+      "    return 1.33 + eps + 0.73 / (log_OI_Ha - eps + 0.59)\n",
+      "\n",
+      "def kauffmann(log_NII_Ha, eps=0):\n",
+      "    result = 1.3 + eps + 0.61 / (log_NII_Ha - eps - 0.05)\n",
+      "    result[log_NII_Ha > eps + 0.05] = -2\n",
+      "    return result\n",
+      "\n",
+      "def stravinska_NII(log_NII_Ha, eps=0):\n",
+      "    strav_NII = ((-30.787)+(1.1358*(log_NII_Ha))+(0.27297*((log_NII_Ha)**2)))*(np.tanh(5.7409*(log_NII_Ha)))-31.093\n",
+      "    return strav_NII\n",
+      "\n",
+      "def stravinska_SII(log_SII_Ha, eps=0):\n",
+      "    strav_SII = 1.2 + eps + 0.61 / (log_SII_Ha - eps + 0.2)\n",
+      "    strav_SII[log_SII_Ha > eps + 0.05] = -2\n",
+      "    return strav_SII\n",
+      "\n",
+      "def stravinska_OI(log_OI_Ha, eps=0):\n",
+      "    strav_OI = ((-30.787)+(1.1358*(log_OI_Ha))+(0.27297*((log_OI_Ha)**2)))*(np.tanh(5.7409*(log_OI_Ha)))-31.093\n",
+      "    return strav_OI\n",
+      "\n",
+      "def log_OIII_Hb_OII(log_OII_HbEW, eps=0):\n",
+      "    return eps + ((0.11)/(log_OII_HbEW - eps -0.92)) + 0.85\n",
+      "\n",
+      "def complog_OIII_Hb_OII(log_OII_HbEW, eps=0):\n",
+      "    return -(log_OII_HbEW - 1.0)**2 - 0.1*(log_OII_HbEW) + 0.25\n",
+      "\n",
+      "def compIlog_OIII_Hb_OII(log_OII_HbEW, eps=0):\n",
+      "    return (log_OII_HbEW - 0.2)**2 - 0.6\n",
+      "\n",
+      "def LINERlog_OIII_Hb_OII(log_OII_HbEW, eps=0):\n",
+      "    return 0.95*(log_OII_HbEW)-0.4\n",
+      "\n",
+      "def log_OIII_OII_OI(log_OI_Ha, eps=0):\n",
+      "    return ((-1.701)*(log_OI_Ha))-2.163\n",
+      "\n",
+      "def log_OI_Ha(log_OI_Ha, eps=0):\n",
+      "    return ((1.0)*(log_OI_Ha))+0.7\n",
+      "\n",
+      "def y(x):\n",
+      "    y = (x**2) - 1.682687002\n",
+      "    return y\n",
+      "\n",
+      "def f3(x):\n",
+      "    return np.maximum(log_OIII_Hb_OII(x), LINERlog_OIII_Hb_OII(x))\n",
+      "\n",
+      "OI2  = np.linspace(-2.50000, 0.00000, 10000)\n",
+      "Ha   = np.linspace(-1.05847, 0.00000, 10000)\n",
+      "OII  = np.linspace(-2.00000, 0.89000, 10000)\n",
+      "sOI  = np.linspace(-2.00000, 2.00000, 10000)\n",
+      "OIIc = np.linspace( 0.10000, 1.05000, 10000)\n",
+      "OIIL = np.linspace( 0.72000, 2.00000, 10000)\n",
+      "OIIH = np.linspace(-1.50000, 2.00000, 10000)\n",
+      "OIIR = np.linspace( 0.86498, 1.59078, 10000)\n",
+      "\n",
+      "OIIerrp = np.linspace(-2.00, 0.99, 10000)\n",
+      "OIIerrn = np.linspace(-2.00, 0.78, 10000)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 34
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "L_OIII, logOII_OIII, logNIIHa, logOIIIHb = np.genfromtxt('/Users/iMacHome/Downloads/BPT_Silverman_Diagnostic.csv', delimiter=',', unpack=True)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 35
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "Darg_logOIIIHb, Darg_logNIIHa = np.genfromtxt('/Users/iMacHome/Downloads/Darg_Control_Sample.csv', delimiter=',', unpack=True)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 36
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "#Demarcations BPT Scatter Plot\n",
+      "\n",
+      "Measured_Predicted_OIII_Hb     = log_OIII_Hb_NII(logNIIHa)\n",
+      "Kauffmann_Predicted_OIII_Hb    = kauffmann(logNIIHa)\n",
+      "Strav_NII_Predicted_OIII_Hb    = stravinska_NII(logNIIHa)\n",
+      "\n",
+      "Seyfert                         = (logOIIIHb > Measured_Predicted_OIII_Hb) & (logOIIIHb > 0.490) & (logNIIHa >= -0.222)\n",
+      "Above_Predicted_NII_Index       = (logOIIIHb > Measured_Predicted_OIII_Hb)\n",
+      "Above_Predicted_NII_Index04     = (logNIIHa  > 0.4) \n",
+      "Below_Predicted_NII_Index       = (logOIIIHb < Measured_Predicted_OIII_Hb) & (logNIIHa <= 0.4) & (logOIIIHb > Kauffmann_Predicted_OIII_Hb)\n",
+      "Below_Predicted_Kauff_Index     = (logOIIIHb < Kauffmann_Predicted_OIII_Hb) & (logOIIIHb > Strav_NII_Predicted_OIII_Hb)\n",
+      "Below_Predicted_Stravinska_NII  = (logOIIIHb < Strav_NII_Predicted_OIII_Hb)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 37
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "print len(logOII_OIII[Above_Predicted_NII_Index])"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [
+      {
+       "output_type": "stream",
+       "stream": "stdout",
+       "text": [
+        "786\n"
+       ]
+      }
+     ],
+     "prompt_number": 38
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "binsize = 0.05"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 39
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "#Demarcations BPT Histogram Plot\n",
+      "\n",
+      "min_x_data_AGN, max_x_data_AGN   = np.min(logNIIHa[Above_Predicted_NII_Index]), np.max(logNIIHa[Above_Predicted_NII_Index])\n",
+      "num_x_bins_AGN                   = np.floor((max_x_data_AGN - min_x_data_AGN) / binsize)\n",
+      "\n",
+      "min_y_data_AGN, max_y_data_AGN   = np.min(logOIIIHb[Above_Predicted_NII_Index]), np.max(logOIIIHb[Above_Predicted_NII_Index])\n",
+      "num_y_bins_AGN                   = np.floor((max_y_data_AGN - min_y_data_AGN) / binsize)\n",
+      "\n",
+      "min_x_data_COM, max_x_data_COM   = np.min(logNIIHa[Below_Predicted_NII_Index]), np.max(logNIIHa[Below_Predicted_NII_Index])\n",
+      "num_x_bins_COM                   = np.floor((max_x_data_COM - min_x_data_COM) / binsize)\n",
+      "\n",
+      "min_y_data_COM, max_y_data_COM   = np.min(logOIIIHb[Below_Predicted_NII_Index]), np.max(logOIIIHb[Below_Predicted_NII_Index])\n",
+      "num_y_bins_COM                   = np.floor((max_y_data_COM - min_y_data_COM) / binsize)\n",
+      "\n",
+      "min_x_data_KAU, max_x_data_KAU   = np.min(logNIIHa[Below_Predicted_Kauff_Index]), np.max(logNIIHa[Below_Predicted_Kauff_Index])\n",
+      "num_x_bins_KAU                   = np.floor((max_x_data_KAU - min_x_data_KAU) / binsize)\n",
+      "\n",
+      "min_y_data_KAU, max_y_data_KAU   = np.min(logOIIIHb[Below_Predicted_Kauff_Index]), np.max(logOIIIHb[Below_Predicted_Kauff_Index])\n",
+      "num_y_bins_KAU                   = np.floor((max_y_data_KAU - min_y_data_KAU) / binsize)\n",
+      "\n",
+      "min_x_data_STR, max_x_data_STR   = np.min(logNIIHa[Below_Predicted_Stravinska_NII]), np.max(logNIIHa[Below_Predicted_Stravinska_NII])\n",
+      "num_x_bins_STR                   = np.floor((max_x_data_STR - min_x_data_STR) / binsize)\n",
+      "\n",
+      "min_y_data_STR, max_y_data_STR   = np.min(logOIIIHb[Below_Predicted_Stravinska_NII]), np.max(logOIIIHb[Below_Predicted_Stravinska_NII])\n",
+      "num_y_bins_STR                   = np.floor((max_y_data_STR - min_y_data_STR) / binsize)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 40
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "nullfmt           = plt.NullFormatter()\n",
+      "left, width       = 0.1, 0.4\n",
+      "bottom, height    = 0.1, 0.4\n",
+      "bottom_h = left_h = left + width + 0.02\n",
+      "\n",
+      "#rect_scatter = [left, bottom, width, height]\n",
+      "#rect_histx   = [left, bottom_h, width, 0.4]\n",
+      "#rect_histy   = [left_h, bottom, 0.4, height]\n",
+      "\n",
+      "fig = plt.figure(221)\n",
+      "\n",
+      "axScatter = fig.add_subplot(223)\n",
+      "axScatter.set_xlabel(r'$\\mathrm{log([NII]\\ \\lambda{6584}\\AA/H\\alpha)}$', fontsize='medium')\n",
+      "axScatter.set_ylabel(r'$\\mathrm{log([OIII]\\ \\lambda{5008}\\AA/H\\beta)}$', fontsize='medium')\n",
+      "axScatter.xaxis.labelpad = 10\n",
+      "axScatter.yaxis.labelpad = 10\n",
+      "axScatter.set_xlim(-2.0, 1.5)\n",
+      "axScatter.set_ylim(-2.0, 2.5)\n",
+      "\n",
+      "axScatter.tick_params(axis='both', which='major', labelsize=10)\n",
+      "axScatter.tick_params(axis='both', which='minor', labelsize=10)\n",
+      "\n",
+      "#plt.ylabel(r'$\\mathrm{log([OIII]/H\\beta)}$', fontsize='medium')\n",
+      "#plt.xlabel(r'$\\mathrm{log([NII]/H\\alpha)}$', fontsize='medium')\n",
+      "\n",
+      "axScatter.plot(NII, log_OIII_Hb_NII(NII), '-k')\n",
+      "axScatter.plot(NIIv1, log_OIII_Hb_NII(NIIv1, 0.1), '--k')\n",
+      "axScatter.plot(NIIv2, log_OIII_Hb_NII(NIIv2, -0.1), '--k')\n",
+      "axScatter.plot(NII, stravinska_NII(NII), '-.k')\n",
+      "\n",
+      "axScatter.plot(KAUFF, kauffmann(KAUFF), ':k')\n",
+      "\n",
+      "line1= plt.plot(KAUFF_INVISIBLE, kauffmann(KAUFF_INVISIBLE), 'k')\n",
+      "line1[0].set_alpha(0)\n",
+      "\n",
+      "axScatter.plot(KAUFF, kauffmann(KAUFF), ':k')\n",
+      "\n",
+      "line1= plt.plot(KAUFF_INVISIBLE, kauffmann(KAUFF_INVISIBLE), 'k')\n",
+      "line1[0].set_alpha(0)\n",
+      "\n",
+      "axHistX = fig.add_subplot(221)\n",
+      "axHistX.set_xlim(-2.0, 1.5)\n",
+      "axHistX.set_yticks([200,400,600,800,1000])\n",
+      "axHistX.set_ylim(0, 1000)\n",
+      "\n",
+      "axHistY = fig.add_subplot(224)\n",
+      "axHistY.set_xlim(0, 300)\n",
+      "axHistY.set_xticks([50,100,150,200,250,300])\n",
+      "axHistY.set_ylim(-2.0, 2.5)\n",
+      "\n",
+      "#axHistX2 = fig.add_subplot(232)\n",
+      "#axHistX2.set_ylim(0, 1000)\n",
+      "#axHistX2.set_xlim(-1.0, 2.0)\n",
+      "\n",
+      "axHistX.xaxis.set_major_formatter(nullfmt)\n",
+      "#axHistX2.xaxis.set_major_formatter(nullfmt)\n",
+      "#axHistX2.yaxis.set_major_formatter(nullfmt)\n",
+      "axHistY.yaxis.set_major_formatter(nullfmt)\n",
+      "\n",
+      "#axScatter.hexbin(BlogNIIHalpha, BlogOIIIHbeta, bins='log', cmap=plt.cm.binary)\n",
+      "#axScatter.hexbin(BlogNIIHalpha, BlogOIIIHbeta, bins='log', cmap=plt.cm.binary)\n",
+      "\n",
+      "axScatter.fill_between(NII, log_OIII_Hb_NII(NII), kauffmann(NII), where=log_OIII_Hb_NII(NII)>=kauffmann(NII),\n",
+      "                 facecolor='gray', alpha=0.45, edgecolor='none')\n",
+      "\n",
+      "#axScatter.scatter(logNIIHalpha, logOIIIHbeta, marker=\"o\",c='0.6',s=9)\n",
+      "\n",
+      "\n",
+      "#Darg Control Sample\n",
+      "axScatter.scatter(Darg_logNIIHa, Darg_logOIIIHb, marker=\"x\", c='0.6', label='Darg et al. (2010) SDSS Galaxy Zoo Mergers')\n",
+      "#Seyfert\n",
+      "axScatter.scatter(logNIIHa[Above_Predicted_NII_Index],      logOIIIHb[Above_Predicted_NII_Index],      marker=\"o\", c='0.1',    s=15,lw=0.6, label='AGN/LINER')\n",
+      "#Composite\n",
+      "axScatter.scatter(logNIIHa[Below_Predicted_NII_Index],      logOIIIHb[Below_Predicted_NII_Index],      marker=\"o\", c='#562cd4',s=15,lw=0.6, label='Kewley-Kauffmann Composite')\n",
+      "#Kauffmann SF\n",
+      "axScatter.scatter(logNIIHa[Below_Predicted_Kauff_Index],    logOIIIHb[Below_Predicted_Kauff_Index],    marker=\"o\", c='0.7',    s=15,lw=0.6, label='Weak SF Composite')\n",
+      "#Stravinska SF\n",
+      "axScatter.scatter(logNIIHa[Below_Predicted_Stravinska_NII], logOIIIHb[Below_Predicted_Stravinska_NII], marker=\"o\", c='0.5',    s=15,lw=0.6, label='Strong Star-Forming')\n",
+      "axScatter.legend(loc='upper left', prop={'family':'serif', 'size':'x-small'}, frameon=False, scatterpoints=1)\n",
+      "\n",
+      "#axScatter.scatter(logNIIHa[Seyfert], logOIIIHb[Seyfert], marker=\"^\", c='0.55',s=25,lw=0.6, label='Seyfert')\n",
+      "\n",
+      "\n",
+      "\n",
+      "axHistX.hist(logNIIHa[Above_Predicted_NII_Index],       num_x_bins_AGN, ec='0.1',     fc='none', histtype='step',lw=1.2)\n",
+      "axHistX.hist(logNIIHa[Below_Predicted_NII_Index],       num_x_bins_COM, ec='#562cd4', fc='none', histtype='step',lw=1.2)\n",
+      "axHistX.hist(logNIIHa[Below_Predicted_Kauff_Index],     num_x_bins_KAU, ec='0.7',     fc='none', histtype='step',lw=1.2)\n",
+      "axHistX.hist(logNIIHa[Below_Predicted_Stravinska_NII],  num_x_bins_STR, ec='0.5',     fc='none', histtype='step',lw=1.2)\n",
+      "\n",
+      "axHistY.hist(logOIIIHb[Above_Predicted_NII_Index],      num_y_bins_AGN, ec='0.1',     fc='none', histtype='step', orientation='horizontal',lw=1.2)\n",
+      "axHistY.hist(logOIIIHb[Below_Predicted_NII_Index],      num_y_bins_COM, ec='#562cd4', fc='none', histtype='step', orientation='horizontal',lw=1.2)\n",
+      "axHistY.hist(logOIIIHb[Below_Predicted_Kauff_Index],    num_y_bins_KAU, ec='0.7',     fc='none', histtype='step', orientation='horizontal',lw=1.2)\n",
+      "axHistY.hist(logOIIIHb[Below_Predicted_Stravinska_NII], num_y_bins_STR, ec='0.5',     fc='none', histtype='step', orientation='horizontal',lw=1.2)\n",
+      "axHistY.xaxis.labelpad = 10\n",
+      "axHistX.yaxis.labelpad = 10\n",
+      "axHistX.tick_params(axis='both', which='major', labelsize=10)\n",
+      "#axHistX2.tick_params(axis='both', which='major', labelsize=10)\n",
+      "axHistY.tick_params(axis='both', which='major', labelsize=10)\n",
+      "\n",
+      "axHistX.plot(np.NaN, np.NaN, label='AGN/LINER',              color='0.1',     linewidth=1.2)\n",
+      "axHistX.plot(np.NaN, np.NaN, label='Kewley-Kauffmann Composite', color='#562cd4', linewidth=1.2)\n",
+      "axHistX.plot(np.NaN, np.NaN, label='Weak SF Composite', color='0.7',     linewidth=1.2)\n",
+      "axHistX.plot(np.NaN, np.NaN, label='Strong Star-Forming',     color='0.5',     linewidth=1.2)\n",
+      "axHistY.plot(np.NaN, np.NaN, label='AGN/LINER',              color='0.1',     linewidth=1.2)\n",
+      "axHistY.plot(np.NaN, np.NaN, label='Kewley-Kauffmann Composite', color='#562cd4', linewidth=1.2)\n",
+      "axHistY.plot(np.NaN, np.NaN, label='Weak SF Composite', color='0.7',     linewidth=1.2)\n",
+      "axHistY.plot(np.NaN, np.NaN, label='Strong Star-Forming',     color='0.5',     linewidth=1.2)\n",
+      "\n",
+      "axHistX.set_ylabel(r'$N$', fontsize='medium')\n",
+      "axHistY.set_xlabel(r'$N$', fontsize='medium')\n",
+      "\n",
+      "axScatter.axhline(y=0.49, xmin=0, xmax=1,   linestyle='-.',c='k',lw=1.2)\n",
+      "axScatter.axvline(x=-0.222, ymin=0, ymax=1, linestyle='-.',c='k',lw=1.2)\n",
+      "axHistX.axvline(x=-0.222, ymin=0, ymax=1,   linestyle='-.',c='k',lw=1.2)\n",
+      "axHistY.axhline(y=0.49, xmin=0, xmax=1,     linestyle='-.',c='k',lw=1.2)\n",
+      "\n",
+      "axScatter.fill([-0.22,10,10,-0.22], [0.49,0.49,10,10], fill=False, hatch=\"//////\", linewidth=0.0)\n",
+      "\n",
+      "axHistX.legend(loc='upper left',  prop={'family':'serif', 'size':'x-small'}, frameon=False)\n",
+      "axHistY.legend(loc='upper right', prop={'family':'serif', 'size':'x-small'}, frameon=False)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [
+      {
+       "metadata": {},
+       "output_type": "pyout",
+       "prompt_number": 41,
+       "text": [
+        "<matplotlib.legend.Legend at 0x112054210>"
+       ]
+      }
+     ],
+     "prompt_number": 41
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "plt.show()"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 42
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 42
+    }
+   ],
+   "metadata": {}
+  }
+ ]
+}
