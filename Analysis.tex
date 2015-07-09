@@ -1,4 +1,9 @@
-\section{Methods, Analysis \& Discussions}
+\section{Analysis}
+
+\subsection{Double-peaked Component Measurements}
+
+Utilising the open access SDSS spectra of the Liu et al. (2010) sample targets, we performed measurements of the flux of the [O II] λ3727, Hβ, [O III] λ5007, Hα and [N II] λ6583, host stellar velocity dispersion as well as the velocity offsets for the blue shifted and redshifted components to the Hβ and [O III] λ5007 emission-lines. We also obtained r band magnitudes for our sample from the SDSS MPA-JHU database. Utilising a well known gas and absorption line fitting code (\tt{gandalf}; Sarzi et al. 2006) to fit a stellar continuum model to each spectrum. After subtracting the continuum models, we utilise the open access python based spectral fitting routine (\tt{pyspeckits}; Ginsburg \& Mirocha 2011) to fit two Voigt profiles to the double-peaked [O III] λ5007, Hβ, [O III] λ5007, Hα and [N II] λ6583 emission-lines with half widths of σ ~ 1.53 and 0.00 < γ < 1.00 to obtain the best goodness of fit parameter for each profile (i.e., a reduced χ2 statistic ~ 1). The [O II] λλ3726, 3729 Å doublet was treated separately to the ionisation ratio emission-lines, performing a normal Gaussian fit centred on both the doublet theoretical peaks. Each fit returned the flux of both the redshifted and blueshifted values of the peaks mentioned. Utilising the redshift values quoted by the SDSS we converted to the luminosity distance using the cosmological parameters quoted in §1.1 and we then converted the fluxes to luminosities accordingly to the method we prescribe for approximate corrections from the AGN contribution to the [O II] emission.
+
 \subsection{Constraining dAGN Star-Formation Rates}
 \subsubsection{Constraining AGN Contributions}
 
@@ -36,3 +41,4 @@ For our sample redshift range (${{0.01}<{z}<{0.4}}$), we advocated using the \ci
 \subsubsection{AGN Contribution Corrections (Composite Galaxies)}
 
 By their very nature, the star-formation rates of composite emission-line galaxies (Kewley-Kauffmann demarcation region; see grey region: Fig. \ref{BPT-Kewley}) are very difficult to discern from that of their AGN host. For objects classified as composite galaxies under the Kewley-Kauffmann-Stasi{\'n}ska regime; [see \cite{Kewley_Dopita_Sutherland_Heisler_Trevena_2001}; \cite{Kauffmann_2003}; \cite{Stasinska_2006}], we employed a variation on the corrective method in §3.3 of \cite{Wild_2010}. Our method relies on a multi-faceted approach to understanding the AGN contribution to the $\text{[O II]}$ $\lambda3727$ flux from the $\text{[O III]}$ $\lambda5007$ flux, analysing the composite nature of the emission source using BPT diagnostics and then correcting the contribution to the $L_{\text{[O III]}}$ from $\text{[H II]}$ regions in the source. Once composite objects have been ascertained from BPT diagnostics the correction to the $\text{[O II]}$ flux is made by removing the $L_{\text{[O III]}}$ contribution from star-formation regions.   
+  
