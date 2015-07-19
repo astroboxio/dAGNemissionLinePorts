@@ -1,5 +1,5 @@
 Introduction.tex
-Population Sample.tex
+Population.tex
 figures/InteractiveBPT/index.html
 Analysis.tex
 figures/Demarcation/Demarcation.png
