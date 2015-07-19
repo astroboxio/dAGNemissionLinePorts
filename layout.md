@@ -1,5 +1,5 @@
 Introduction.tex
-Population_section_Population_Selection_Sample__.tex
+Population Sample.tex
 Sample.tex
 figures/InteractiveBPT/index.html
 Analysis.tex
