@@ -7,3 +7,4 @@ figures/Demarcation/Demarcation.png
 figures/Silverman/Silverman.png
 Methods.tex
 Statistics.tex
+figures/Kolmogorov-Smirnov/Kolmogorov-Smirnov.png
