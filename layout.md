@@ -6,5 +6,6 @@ Analysis.tex
 figures/Demarcation/Demarcation.png
 figures/Silverman/Silverman.png
 Methods.tex
+figures/Brinchmann/Brinchmann.png
 Statistics.tex
 figures/Kolmogorov-Smirnov/Kolmogorov-Smirnov.png
