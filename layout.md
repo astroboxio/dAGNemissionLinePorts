@@ -1,6 +1,5 @@
 Introduction.tex
 Data.tex
-Population.tex
 figures/InteractiveBPT/index.html
 figures/Demarcation/Demarcation.png
 figures/Silverman/Silverman.png
