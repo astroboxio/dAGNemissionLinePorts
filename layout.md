@@ -7,3 +7,4 @@ Methods.tex
 figures/Brinchmann/Brinchmann.png
 Statistics.tex
 figures/Kolmogorov-Smirnov/Kolmogorov-Smirnov.png
+figures/Kolmogorov1/Kolmogorov1.png
