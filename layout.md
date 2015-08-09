@@ -1,5 +1,6 @@
 Introduction.tex
 Data.tex
+figures/Spectra/Spectra.png
 figures/InteractiveBPT/index.html
 figures/Demarcation/Demarcation.png
 figures/Silverman/Silverman.png
