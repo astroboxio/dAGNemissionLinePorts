@@ -8,4 +8,3 @@ Methods.tex
 figures/Kolmogorov/Kolmogorov.png
 Results.tex
 figures/Brinchmann/Brinchmann.png
-figures/Silverman1/Silverman1.png
