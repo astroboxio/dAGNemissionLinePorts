@@ -2,7 +2,6 @@ Introduction.tex
 Data.tex
 figures/Continuum/Continuum.png
 figures/Emissions/Emissions.png
-figures/InteractiveBPT/index.html
 figures/Demarcation/Demarcation.png
 Methods.tex
 Results.tex
